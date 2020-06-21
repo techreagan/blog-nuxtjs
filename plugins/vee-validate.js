@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { required, min, numeric, length } from 'vee-validate/dist/rules'
+import { required, min, numeric, length, email } from 'vee-validate/dist/rules'
 import {
   extend,
   ValidationObserver,
@@ -12,6 +12,11 @@ setInteractionMode('eager')
 extend('required', {
   ...required,
   message: 'Enter {_field_}'
+})
+
+extend('email', {
+  ...email,
+  message: 'Email must be valid'
 })
 
 extend('min', {

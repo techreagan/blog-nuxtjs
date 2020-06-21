@@ -7,6 +7,7 @@
             <v-row class="justify-space-between align-center">
               <v-btn x-large text>Tech Reagan</v-btn>
               <v-spacer></v-spacer>
+
               <div>
                 <v-switch
                   v-model="$vuetify.theme.dark"

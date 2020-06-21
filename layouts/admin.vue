@@ -14,6 +14,7 @@
           :to="item.to"
           router
           exact
+          @click="item.to === '' ? $auth.logout() : ''"
         >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -37,6 +38,12 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <div v-if="$auth.loggedIn" class="mr-4">
+        Hello Reagan
+      </div>
+
+      <!-- <v-btn color="red" class="ml-4">Logout</v-btn> -->
+
       <div>
         <v-switch v-model="$vuetify.theme.dark" hide-details inset></v-switch>
       </div>
@@ -75,6 +82,11 @@ export default {
           icon: 'mdi-home',
           title: 'Go Home',
           to: '/'
+        },
+        {
+          icon: 'mdi-off',
+          title: 'Log out',
+          to: ''
         }
       ],
       miniVariant: false,
@@ -82,6 +94,10 @@ export default {
       rightDrawer: false,
       title: 'Tech Reagan Blog'
     }
+  },
+  mounted() {
+    // console.log(this.$auth.loggedIn)
+    // console.log(this.$auth)
   }
 }
 </script>
