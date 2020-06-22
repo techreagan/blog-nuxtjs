@@ -40,8 +40,6 @@
 
 <script>
 export default {
-  data() {
-    return {}
-  }
+  auth: false
 }
 </script>

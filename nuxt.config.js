@@ -86,6 +86,9 @@ export default {
       home: '/admin/dashboard'
     }
   },
+  router: {
+    middleware: ['auth']
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
