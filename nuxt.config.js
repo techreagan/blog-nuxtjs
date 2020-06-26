@@ -37,6 +37,7 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
+    { src: '@/plugins/api.js', mode: 'Client' },
     { src: '@/plugins/vee-validate.js', mode: 'Client' },
     { src: '@/plugins/vue-quil-editor.js', ssr: false }
   ],
@@ -96,6 +97,9 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
+      options: {
+        customProperties: true
+      },
       dark: true,
       themes: {
         dark: {
@@ -105,9 +109,12 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          success: colors.green.accent3,
+          background: '#00a86b'
         },
-        light: {}
+        light: {
+          background: '#d0f0c0'
+        }
       }
     }
   },

@@ -17,6 +17,7 @@
         item-key="title"
         class="elevation-1"
         :search="search"
+        :loading="loading"
       >
         <template v-slot:top>
           <v-text-field
@@ -87,29 +88,32 @@
 <script>
 export default {
   layout: 'admin',
+
   data() {
     return {
       search: '',
-      posts: [
-        {
-          id: 1,
-          title: 'Hello World',
-          createdAt: new Date().toDateString(),
-          updatedAt: new Date().toDateString()
-        },
-        {
-          id: 2,
-          title: 'Javascript',
-          createdAt: new Date().toDateString(),
-          updatedAt: new Date().toDateString()
-        },
-        {
-          id: 3,
-          title: 'Hello World1',
-          createdAt: new Date().toDateString(),
-          updatedAt: new Date().toDateString()
-        }
-      ],
+      loading: false,
+      posts: [],
+      // posts: [
+      //   {
+      //     id: 1,
+      //     title: 'Hello World',
+      //     createdAt: new Date().toDateString(),
+      //     updatedAt: new Date().toDateString()
+      //   },
+      //   {
+      //     id: 2,
+      //     title: 'Javascript',
+      //     createdAt: new Date().toDateString(),
+      //     updatedAt: new Date().toDateString()
+      //   },
+      //   {
+      //     id: 3,
+      //     title: 'Hello World1',
+      //     createdAt: new Date().toDateString(),
+      //     updatedAt: new Date().toDateString()
+      //   }
+      // ],
       postToDelete: null,
       deleteDialog: false,
       deleteBtnLoading: false,
@@ -140,7 +144,26 @@ export default {
       ]
     }
   },
+  mounted() {
+    this.getPosts()
+  },
   methods: {
+    async getPosts() {
+      this.loading = true
+      const { data } = await this.$api.posts
+        .getPosts()
+        .catch((err) => {
+          this.loading = false
+          console.log(err)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+
+      if (!data) return
+
+      this.posts = data.data
+    },
     editPost(data) {
       this.$router.push(`/admin/posts/edit-post/${data.id}`)
     },
