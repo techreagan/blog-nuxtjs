@@ -154,6 +154,7 @@ export default {
         .getPosts()
         .catch((err) => {
           this.loading = false
+          // eslint-disable-next-line
           console.log(err)
         })
         .finally(() => {

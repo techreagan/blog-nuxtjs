@@ -91,11 +91,23 @@ export default {
     console.log('App inited, the Quill instance object is:', this.$refs.editor)
   },
   methods: {
-    save() {
+    async save() {
       if (this.body.length <= 3) {
         return false
       }
-      // console.log('hello world')
+      await this.$api.posts
+        .createPost({ title: this.title, body: this.body })
+        .catch((err) => {
+          // eslint-disable-next-line
+          console.log(err)
+          this.$refs.form.setErrors({
+            Title: ['Title is invalid'],
+            Body: ['Body is invalid']
+          })
+        })
+        .finally(() => {
+          this.$router.push('/admin/posts')
+        })
     },
     onEditorChange: debounce(function (value) {
       this.body = value.html
