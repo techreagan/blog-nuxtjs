@@ -1,7 +1,9 @@
 <template>
   <v-layout>
     <v-flex>
-      <v-btn class="mb-10" to="/" color="primary">back</v-btn>
+      <v-btn class="mb-10" fab small to="/" color="primary"
+        ><v-icon>mdi-chevron-left</v-icon></v-btn
+      >
       <h1 class="mb-5">{{ title }}</h1>
       <client-only>
         <div class="output ql-snow">
@@ -48,6 +50,11 @@ export default {
       const e = document.createElement('div')
       e.innerHTML = input
       return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue
+    }
+  },
+  head() {
+    return {
+      title: this.title
     }
   }
 }
