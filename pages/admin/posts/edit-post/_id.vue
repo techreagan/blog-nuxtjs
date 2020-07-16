@@ -58,7 +58,8 @@ export default {
   data() {
     return {
       title: '',
-      body: dedent`<p>Example of a very good blog post</p>`,
+      body: '',
+      id: null,
       editorOption: {
         // Some Quill options...
         theme: 'snow',
@@ -86,20 +87,72 @@ export default {
       }
     }
   },
+  // async asyncData({ $axios, error, $api, params }) {
+  //   const { data } = await $api.posts.getPost(params.id).catch((e) => {
+  //     error({
+  //       status: 503,
+  //       message: 'Unable to fetch events at this time. Please try again.'
+  //     })
+  //   })
+  //   if (!data) return
+
+  //   return {
+  //     id: data.data._id,
+  //     title: data.data.title,
+  //     body: dedent`${this.htmlDecode(data.data.body)}`
+  //   }
+  // },
   mounted() {
     if (!this.$route.params.id) this.$router.push('/admin/posts')
+    this.getPost()
     // eslint-disable-next-line
     console.log('App inited, the Quill instance object is:', this.$refs.editor)
   },
   methods: {
-    save() {
+    async save() {
       if (this.body.length <= 3) {
         return false
       }
+      await this.$api.posts
+        .updatePost(this.id, { title: this.title, body: `${this.body}` })
+        .catch((err) => {
+          // eslint-disable-next-line
+          console.log(err)
+          this.$refs.form.setErrors({
+            Title: ['Title is invalid'],
+            Body: ['Body is invalid']
+          })
+        })
+        .finally(() => {
+          this.$router.push('/admin/posts')
+        })
+      // console.log(this.body)
       // console.log('hello world')
+    },
+    async getPost() {
+      const { data } = await this.$api.posts
+        .getPost(this.$route.params.id)
+        .catch((err) => {
+          // eslint-disable-next-line
+          console.log(err)
+          this.$router.push('/admin/posts')
+        })
+      if (!data) return
+
+      this.id = data.data._id
+      this.title = data.data.title
+      // console.log(this.htmlDecode(data.data.body))
+      this.body = dedent`${this.htmlDecode(data.data.body)}`
+    },
+    htmlDecode(input) {
+      const e = document.createElement('div')
+      e.innerHTML = input
+      return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue
     },
     onEditorChange: debounce(function (value) {
       this.body = value.html
+      // eslint-disable-next-line
+      console.log(this.body)
     }, 466),
     onEditorBlur(editor) {
       // eslint-disable-next-line
@@ -113,6 +166,10 @@ export default {
       // eslint-disable-next-line
       console.log('editor ready!', editor)
     }
+    // onEditorChange({ quill, html, text }) {
+    //   console.log('editor change!', quill, html, text)
+    //   this.content = html
+    // }
   }
 }
 </script>

@@ -95,8 +95,9 @@ export default {
       if (this.body.length <= 3) {
         return false
       }
+
       await this.$api.posts
-        .createPost({ title: this.title, body: this.body })
+        .createPost({ title: this.title, body: `${this.body}` })
         .catch((err) => {
           // eslint-disable-next-line
           console.log(err)

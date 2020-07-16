@@ -37,8 +37,9 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    { src: '@/plugins/api.js', mode: 'Client' },
-    { src: '@/plugins/vee-validate.js', mode: 'Client' },
+    { src: '@/plugins/html-decode.js' },
+    { src: '@/plugins/api.js', mode: 'all' },
+    { src: '@/plugins/vee-validate.js', mode: 'client' },
     { src: '@/plugins/vue-quil-editor.js', ssr: false }
   ],
   /*
@@ -126,6 +127,15 @@ export default {
      ** You can extend webpack config here
      */
     transpile: ['vee-validate/dist/rules'],
+    // plugins: [
+    //   new webpack.ProvidePlugin({
+    //     'window.Quill': 'quill/dist/quill.js',
+    //     Quill: 'quill/dist/quill.js'
+    //   })
+    // ],
     extend(config, ctx) {}
+  },
+  generate: {
+    fallback: true
   }
 }

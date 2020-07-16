@@ -14,7 +14,7 @@
       <v-data-table
         :headers="headers"
         :items="posts"
-        item-key="title"
+        item-key="_id"
         class="elevation-1"
         :search="search"
         :loading="loading"

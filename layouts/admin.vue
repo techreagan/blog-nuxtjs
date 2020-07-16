@@ -98,6 +98,19 @@ export default {
   mounted() {
     // console.log(this.$auth.loggedIn)
     // console.log(this.$auth)
+  },
+  head() {
+    return {
+      titleTemplate: '%s - Blog Admin',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'A worldclass software and network engineer, with alot of experience under my belt Welcome to my blog, this blog will be about software and network engineering.'
+        }
+      ]
+    }
   }
 }
 </script>
