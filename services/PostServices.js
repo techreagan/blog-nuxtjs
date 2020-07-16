@@ -1,6 +1,8 @@
 export default (axios) => ({
-  getPosts() {
-    return axios.get('posts')
+  getPosts(params) {
+    return axios.get('posts', {
+      params
+    })
   },
   getPost(id) {
     return axios.get(`posts/${id}`)

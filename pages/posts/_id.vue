@@ -4,39 +4,60 @@
       <v-btn class="mb-10" fab small to="/" color="primary"
         ><v-icon>mdi-chevron-left</v-icon></v-btn
       >
-      <h1 class="mb-5">{{ title }}</h1>
-      <client-only>
-        <div class="output ql-snow">
-          <!-- eslint-disable -->
-          <div class="ql-editor" v-html="htmlBody"></div>
+
+      <v-alert v-if="errored" prominent type="error">
+        <v-row align="center">
+          <v-col class="grow">
+            <div class="title">Error!</div>
+            <div>
+              Something went wrong, but don’t fret — let’s give it another shot.
+            </div>
+          </v-col>
+          <v-col class="shrink">
+            <v-btn @click="getPost">Take action</v-btn>
+          </v-col>
+        </v-row>
+      </v-alert>
+
+      <main v-else>
+        <div v-if="loading">
+          <v-skeleton-loader type="heading"></v-skeleton-loader>
+          <br />
+          <v-skeleton-loader
+            type="paragraph"
+            :loading="loading"
+          ></v-skeleton-loader>
+          <v-skeleton-loader
+            type="paragraph"
+            :loading="loading"
+          ></v-skeleton-loader>
+          <v-skeleton-loader
+            type="paragraph"
+            :loading="loading"
+          ></v-skeleton-loader>
         </div>
-      </client-only>
+        <article v-else>
+          <h1 class="mb-5">{{ title }}</h1>
+          <div class="output ql-snow">
+            <!-- eslint-disable -->
+            <div class="ql-editor pl-0" v-html="htmlBody"></div>
+          </div>
+        </article>
+      </main>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
-// import dedent from 'dedent'
-// import hljs from 'highlight.js'
-// import debounce from 'lodash/debounce'
-
-// highlight.js style
-// import 'highlight.js/styles/tomorrow.css'
 export default {
   auth: false,
-  async asyncData({ $axios, error, $htmlDecode, $api, params }) {
-    const { data } = await $api.posts.getPost(params.id).catch((e) => {
-      error({
-        status: 503,
-        message: 'Unable to fetch events at this time. Please try again.'
-      })
-    })
-    if (!data) return
 
+  data() {
     return {
-      id: data.data._id,
-      title: data.data.title,
-      body: data.data.body
+      loading: true,
+      errored: false,
+      title: '',
+      body: ''
     }
   },
   computed: {
@@ -44,7 +65,36 @@ export default {
       return this.htmlDecode(this.body)
     }
   },
+  mounted() {
+    this.getPost()
+  },
   methods: {
+    async getPost() {
+      this.loading = true
+      this.errored = false
+      const { data } = await this.$api.posts
+        .getPost(this.$route.params.id)
+        .catch((e) => {
+          // eslint-disable-next-line
+          console.log(e)
+          this.errored = true
+          // error({
+          //   status: 503,
+          //   message: 'Unable to fetch events at this time. Please try again.'
+          // })
+        })
+        .finally(() => {
+          this.loading = false
+        })
+
+      if (!data) return
+
+      // return {
+      // id: data.data._id,
+      this.title = data.data.title
+      this.body = data.data.body
+      // }
+    },
     htmlDecode(input) {
       if (!process.client) return
       const e = document.createElement('div')
@@ -52,6 +102,7 @@ export default {
       return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue
     }
   },
+
   head() {
     return {
       title: this.title

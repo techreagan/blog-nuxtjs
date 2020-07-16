@@ -22,6 +22,7 @@
                   v-model="title"
                   :error-messages="errors"
                   label="Title"
+                  :loading="inputLoading"
                 ></v-text-field>
               </ValidationProvider>
               <client-only>
@@ -37,7 +38,10 @@
               </client-only>
             </v-card-text>
             <v-card-actions class="pl-0">
-              <v-btn color="blue darken-1 white--text" type="submit"
+              <v-btn
+                :loading="loading"
+                color="blue darken-1 white--text"
+                type="submit"
                 >Edit</v-btn
               >
             </v-card-actions>
@@ -54,7 +58,7 @@ import hljs from 'highlight.js'
 import debounce from 'lodash/debounce'
 
 // highlight.js style
-import 'highlight.js/styles/tomorrow.css'
+// import 'highlight.js/styles/atom-one-dark.css'
 
 export default {
   layout: 'admin',
@@ -63,6 +67,8 @@ export default {
       title: '',
       body: '',
       id: null,
+      loading: false,
+      inputLoading: false,
       editorOption: {
         // Some Quill options...
         theme: 'snow',
@@ -116,6 +122,7 @@ export default {
       if (this.body.length <= 3) {
         return false
       }
+      this.loading = true
       await this.$api.posts
         .updatePost(this.id, { title: this.title, body: `${this.body}` })
         .catch((err) => {
@@ -127,18 +134,23 @@ export default {
           })
         })
         .finally(() => {
+          this.loading = false
           this.$router.push('/admin/posts')
         })
       // console.log(this.body)
       // console.log('hello world')
     },
     async getPost() {
+      this.inputLoading = true
       const { data } = await this.$api.posts
         .getPost(this.$route.params.id)
         .catch((err) => {
           // eslint-disable-next-line
           console.log(err)
           this.$router.push('/admin/posts')
+        })
+        .finally(() => {
+          this.inputLoading = false
         })
       if (!data) return
 

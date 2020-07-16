@@ -172,7 +172,7 @@ export default {
       this.postToDelete = data
       this.deleteDialog = true
     },
-    deletePost(data) {
+    async deletePost(data) {
       // console.log(data)
 
       this.deleteBtnLoading = true
@@ -181,6 +181,11 @@ export default {
       this.snackbar = true
       this.deleteBtnLoading = false
       this.deleteDialog = false
+
+      await this.$api.posts.deletePost(this.postToDelete.id).catch((err) => {
+        // eslint-disable-next-line
+        console.log(err)
+      })
     }
   }
 }

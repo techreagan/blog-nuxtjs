@@ -16,7 +16,7 @@
               <ValidationProvider
                 v-slot="{ errors }"
                 name="Title"
-                rules="required|min:3"
+                rules="required|min:6"
               >
                 <v-text-field
                   v-model="title"
@@ -37,7 +37,10 @@
               </client-only>
             </v-card-text>
             <v-card-actions class="pl-0">
-              <v-btn color="blue darken-1 white--text" type="submit"
+              <v-btn
+                :loading="loading"
+                color="blue darken-1 white--text"
+                type="submit"
                 >Create</v-btn
               >
             </v-card-actions>
@@ -54,7 +57,7 @@ import hljs from 'highlight.js'
 import debounce from 'lodash/debounce'
 
 // highlight.js style
-import 'highlight.js/styles/tomorrow.css'
+// import 'highlight.js/styles/atom-one-dark.css'
 
 export default {
   layout: 'admin',
@@ -62,6 +65,7 @@ export default {
     return {
       title: '',
       body: dedent`<p>Example of a very good blog post</p>`,
+      loading: false,
       editorOption: {
         // Some Quill options...
         theme: 'snow',
@@ -98,9 +102,9 @@ export default {
       if (this.body.length <= 3) {
         return false
       }
-
+      this.loading = true
       await this.$api.posts
-        .createPost({ title: this.title, body: `${this.body}` })
+        .createPost({ title: this.title, body: this.body })
         .catch((err) => {
           // eslint-disable-next-line
           console.log(err)
@@ -110,6 +114,7 @@ export default {
           })
         })
         .finally(() => {
+          this.loading = false
           this.$router.push('/admin/posts')
         })
     },
