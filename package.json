@@ -15,7 +15,7 @@
     "@nuxtjs/axios": "^5.11.0",
     "@nuxtjs/dotenv": "^1.4.1",
     "dedent": "^0.7.0",
-    "highlight.js": "^10.1.1",
+    "highlight.js": "^10.4.1",
     "lodash.debounce": "^4.0.8",
     "nuxt": "^2.13.0",
     "vee-validate": "^3.3.5",
